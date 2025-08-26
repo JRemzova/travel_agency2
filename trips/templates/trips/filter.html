@@ -1,0 +1,47 @@
+<div class="container my-3">
+  <form method="get" action="{% url 'trip_list' %}">
+    <div class="row g-2 align-items-center">
+      <div class="col-md-2">
+        {{ form.continent.label_tag }}
+        {{ form.continent }}
+      </div>
+      <div class="col-md-2">
+        {{ form.country.label_tag }}
+        {{ form.country }}
+      </div>
+      <div class="col-md-2">
+        {{ form.city.label_tag }}
+        {{ form.city }}
+      </div>
+      <div class="col-md-2">
+        {{ form.hotel.label_tag }}
+        {{ form.hotel }}
+      </div>
+      <div class="col-md-2">
+        {{ form.board_type.label_tag }}
+        {{ form.board_type }}
+      </div>
+    </div>
+    <div class="row g-2 align-items-center mt-2">
+      <div class="col-md-3">
+        <label for="{{ form.departure_date_from.id_for_label }}">Odjezd od</label>
+        {{ form.departure_date_from }}
+      </div>
+      <div class="col-md-3">
+        <label for="{{ form.departure_date_to.id_for_label }}">Odjezd do</label>
+        {{ form.departure_date_to }}
+      </div>
+      <div class="col-md-3">
+        <label for="{{ form.return_date_from.id_for_label }}">Návrat od</label>
+        {{ form.return_date_from }}
+      </div>
+      <div class="col-md-3">
+        <label for="{{ form.return_date_to.id_for_label }}">Návrat do</label>
+        {{ form.return_date_to }}
+      </div>
+    </div>
+    <div class="mt-3">
+      <button type="submit" class="btn btn-primary">Filtrovat</button>
+    </div>
+  </form>
+</div>

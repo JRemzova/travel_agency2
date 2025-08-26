@@ -1,0 +1,42 @@
+{% extends "trips/base.html" %}
+{% block title %}Detail zájezdu{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="mb-4">Detail zájezdu</h1>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <h3 class="card-title">
+                {{ trip.destination_city.name }} – {{ trip.hotel.name }}
+            </h3>
+
+            <p class="card-subtitle text-muted mb-3">
+                {{ trip.destination_city.country.name }} ({{ trip.destination_city.country.continent.name }})
+            </p>
+
+            <ul class="list-group list-group-flush mb-3">
+                <li class="list-group-item"><strong>Odjezd:</strong> {{ trip.departure_date }}</li>
+                <li class="list-group-item"><strong>Návrat:</strong> {{ trip.return_date }}</li>
+                <li class="list-group-item"><strong>Délka pobytu:</strong> {{ trip.duration_days }} dní</li>
+                <li class="list-group-item"><strong>Typ stravy:</strong> {{ trip.get_board_type_display }}</li>
+                <li class="list-group-item"><strong>Cena za dospělého:</strong> {{ trip.price_adult }} Kč</li>
+                <li class="list-group-item"><strong>Cena za dítě:</strong> {{ trip.price_child }} Kč</li>
+                <li class="list-group-item"><strong>Dostupná místa:</strong>
+                    {{ trip.slots_adult }} dospělých /
+                    {{ trip.slots_child }} dětí
+                </li>
+            </ul>
+
+            <p class="card-text">
+                Hotel: <a href="{% url 'trip_list' %}?hotel={{ trip.hotel.id }}">{{ trip.hotel.name }}</a><br>
+                Město: <a href="{% url 'trip_list' %}?city={{ trip.destination_city.id }}">{{ trip.destination_city.name }}</a><br>
+                Země: <a href="{% url 'trip_list' %}?country={{ trip.destination_city.country.id }}">{{ trip.destination_city.country.name }}</a><br>
+                Kontinent: <a href="{% url 'trip_list' %}?continent={{ trip.destination_city.country.continent.id }}">{{ trip.destination_city.country.continent.name }}</a>
+            </p>
+            <a href="{% url 'trip_book' trip.id %}" class="btn btn-primary">Koupit zájezd</a>
+            <a href="/" class="btn btn-secondary">← Zpět na domovskou stránku</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

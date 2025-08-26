@@ -1,0 +1,116 @@
+{% extends "trips/base.html" %}
+
+{% block content %}
+<h2>Zakoupení zájezdu: {{ trip }}</h2>
+
+<div class="card mb-4">
+  <div class="card-body">
+    <h5 class="card-title">{{ trip.destination_city.name }} – {{ trip.hotel.name }} ({{ trip.hotel.stars }}★)</h5>
+    <p class="card-text">
+      Odjezd: {{ trip.departure_date }}<br>
+      Návrat: {{ trip.return_date }}<br>
+      Cena dospělý: {{ trip.price_adult }} Kč<br>
+      Cena dítě: {{ trip.price_child }} Kč<br>
+      Volná místa dospělí: {{ trip.slots_adult }}<br>
+      Volná místa děti: {{ trip.slots_child }}
+    </p>
+  </div>
+</div>
+
+<form method="post" id="booking-form">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+
+    <div class="mb-3 row align-items-center">
+        <label for="{{ form.buyer_name.id_for_label }}" class="col-sm-3 col-form-label">{{ form.buyer_name.label }}</label>
+        <div class="col-sm-9">
+          {{ form.buyer_name }}
+          {% for error in form.buyer_name.errors %}
+            <div class="text-danger">{{ error }}</div>
+          {% endfor %}
+        </div>
+    </div>
+
+    <div class="mb-3 row align-items-center">
+        <label for="{{ form.email.id_for_label }}" class="col-sm-3 col-form-label">{{ form.email.label }}</label>
+        <div class="col-sm-9">
+          {{ form.email }}
+          {% for error in form.email.errors %}
+            <div class="text-danger">{{ error }}</div>
+          {% endfor %}
+        </div>
+    </div>
+
+    <div class="mb-3 row align-items-center">
+        <label for="{{ form.adults.id_for_label }}" class="col-sm-3 col-form-label">{{ form.adults.label }}</label>
+        <div class="col-sm-9">
+          {{ form.adults }}
+          {% for error in form.adults.errors %}
+            <div class="text-danger">{{ error }}</div>
+          {% endfor %}
+        </div>
+    </div>
+
+    <div class="mb-3 row align-items-center">
+        <label for="{{ form.children.id_for_label }}" class="col-sm-3 col-form-label">{{ form.children.label }}</label>
+        <div class="col-sm-9">
+          {{ form.children }}
+          {% for error in form.children.errors %}
+            <div class="text-danger">{{ error }}</div>
+          {% endfor %}
+        </div>
+    </div>
+
+    <!-- Skryté pole pro celkovou cenu -->
+    <input type="hidden" name="total_price" id="id_total_price" value="0">
+
+    <div class="mb-3 row align-items-center">
+      <label class="col-sm-3 col-form-label"><strong>Celková cena:</strong></label>
+      <div class="col-sm-9" style="font-size: 1.25rem;">
+        <div id="total-price">0 Kč</div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Zakoupit</button>
+</form>
+
+<a href="{% url 'trip_detail' trip.id %}" class="btn btn-secondary mt-3">← Zpět na detail zájezdu</a>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const priceAdult = parseFloat("{{ trip.price_adult|floatformat:2 }}") || 0;
+    const priceChild = parseFloat("{{ trip.price_child|floatformat:2 }}") || 0;
+    const slotsAdult = parseInt("{{ trip.slots_adult }}") || 0;
+    const slotsChild = parseInt("{{ trip.slots_child }}") || 0;
+
+    const adultsInput = document.getElementById("id_adults");
+    const childrenInput = document.getElementById("id_children");
+    const totalPriceDiv = document.getElementById("total-price");
+    const totalPriceInput = document.getElementById("id_total_price");
+
+    if (!adultsInput.value) adultsInput.value = 0;
+    if (!childrenInput.value) childrenInput.value = 0;
+
+    function updateTotalPrice() {
+        let adults = parseInt(adultsInput.value) || 0;
+        let children = parseInt(childrenInput.value) || 0;
+
+        if (adults > slotsAdult) adults = slotsAdult;
+        if (children > slotsChild) children = slotsChild;
+
+        adultsInput.value = adults;
+        childrenInput.value = children;
+
+        const total = adults * priceAdult + children * priceChild;
+        totalPriceDiv.textContent = total.toLocaleString('cs-CZ') + " Kč";
+        totalPriceInput.value = total.toFixed(2);
+    }
+
+    adultsInput.addEventListener('input', updateTotalPrice);
+    childrenInput.addEventListener('input', updateTotalPrice);
+
+    updateTotalPrice();
+});
+</script>
+
+{% endblock %}

@@ -1,0 +1,20 @@
+<div class="card h-100">
+    <div class="card-body">
+        <h5 class="card-title">
+            <a href="{% url 'trip_list' %}?city={{ trip.destination_city.id }}">
+                {{ trip.destination_city.name }}
+            </a>
+            –
+            <a href="{% url 'trip_list' %}?hotel={{ trip.hotel.id }}">
+                {{ trip.hotel.name }}
+            </a>
+        </h5>
+        <p class="card-text">
+            Od: {{ trip.departure_date }}<br>
+            Do: {{ trip.return_date }}
+        </p>
+        <a href="{% url 'trip_detail' trip.id %}" class="btn btn-outline-secondary btn-sm">
+            Zobrazit detail
+        </a>
+    </div>
+</div>

@@ -1,0 +1,42 @@
+{% extends "trips/base.html" %}
+{% block title %}Cestovní kancelář{% endblock %}
+{% block content %}
+{% include "trips/filter.html" %}
+
+
+
+<h1 class="mb-4">Vítejte u naší cestovní kanceláře</h1>
+
+
+<h3 class="mt-4">Propagované zájezdy</h3>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for trip in promoted_trips %}
+    <div class="col">
+        {% include "trips/trip_card.html" %}
+    </div>
+    {% endfor %}
+</div>
+
+
+<h3 class="mt-5">Nadcházející zájezdy</h3>
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for trip in upcoming_trips %}
+    <div class="col">
+        {% include "trips/trip_card.html" %}
+    </div>
+    {% endfor %}
+</div>
+
+{% for continent, trips in trips_by_continent.items %}
+    {% if trips %}
+        <h3 class="mt-5">{{ continent }}</h3>
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for trip in trips %}
+                <div class="col">
+                    {% include "trips/trip_card.html" with trip=trip %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endfor %}
+{% endblock %}

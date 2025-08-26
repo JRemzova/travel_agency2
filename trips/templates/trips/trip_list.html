@@ -1,0 +1,14 @@
+{% extends "trips/base.html" %}
+
+{% block content %}
+{% include "trips/filter.html" %}
+<h1 class="mb-4">Další zájezdy pro: "{{ filter_name }}"</h1>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for trip in trips %}
+        <div class="col">
+        {% include "trips/trip_card.html" with trip=trip %}
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

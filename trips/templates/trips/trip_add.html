@@ -1,0 +1,98 @@
+{% extends "trips/base.html" %}
+{% load static %}
+
+{% block content %}
+<h2>Přidat nový zájezd</h2>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+
+  <div class="mb-3 row align-items-center">
+    <label for="id_origin_city" class="col-sm-3 col-form-label">Origin city:</label>
+    <div class="col-sm-9">
+      {{ form.origin_city }}
+    </div>
+  </div>
+
+  <div class="mb-3 row align-items-center">
+    <label for="id_destination_city" class="col-sm-3 col-form-label">Destination city:</label>
+    <div class="col-sm-9">
+      <select name="destination_city" id="id_destination_city" class="form-select">
+        <option value="">---------</option>
+        {% for city in cities %}
+          <option value="{{ city.id }}">{{ city.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+  </div>
+
+  <div class="mb-3 row align-items-center">
+    <label for="id_hotel" class="col-sm-3 col-form-label">Hotel:</label>
+    <div class="col-sm-9">
+      <select name="hotel" id="id_hotel" class="form-select" disabled>
+        <option value="">---------</option>
+      </select>
+    </div>
+  </div>
+
+  {% for field in form %}
+    {% if field.name not in 'origin_city destination_city hotel' %}
+      <div class="mb-3 row align-items-center">
+        <label for="{{ field.id_for_label }}" class="col-sm-3 col-form-label">{{ field.label }}</label>
+        <div class="col-sm-9">
+          {{ field }}
+          {% if field.help_text %}
+            <small class="form-text text-muted">{{ field.help_text }}</small>
+          {% endif %}
+          {% for error in field.errors %}
+            <div class="text-danger">{{ error }}</div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+
+  <button type="submit" class="btn btn-primary">Uložit</button>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  $(document).ready(function() {
+    $('#id_destination_city').change(function() {
+      let cityId = $(this).val();
+      let $hotelSelect = $('#id_hotel');
+      $hotelSelect.prop('disabled', true);
+      $hotelSelect.html('<option>Načítám hotely...</option>');
+
+      if (!cityId) {
+        $hotelSelect.html('<option value="">---------</option>');
+        $hotelSelect.prop('disabled', true);
+        return;
+      }
+
+      $.ajax({
+        url: '/ajax/hotels/' + cityId + '/',
+        method: 'GET',
+        success: function(data) {
+          $hotelSelect.empty();
+          $hotelSelect.append('<option value="">---------</option>');
+          if (data.length === 0) {
+            $hotelSelect.append('<option value="">Žádné hotely v tomto městě</option>');
+          } else {
+            $.each(data, function(i, hotel) {
+              $hotelSelect.append('<option value="' + hotel.id + '">' + hotel.name + '</option>');
+            });
+          }
+          $hotelSelect.prop('disabled', false);
+        },
+        error: function() {
+          $hotelSelect.html('<option value="">Chyba při načítání hotelů</option>');
+          $hotelSelect.prop('disabled', true);
+        }
+      });
+    });
+  });
+</script>
+
+{% endblock %}
