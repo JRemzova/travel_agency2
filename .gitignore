@@ -1,0 +1,31 @@
+# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+*.pyc
+
+# Virtual env
+.env
+.venv/
+venv/
+env/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# PyCharm
+.idea/
+
+# Python packaging
+*.egg-info/
+build/
+dist/
+
+# Django
+*.log
+db.sqlite3
+media/
+staticfiles/
+
+# Env files
+*.env
